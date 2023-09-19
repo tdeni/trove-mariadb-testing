@@ -1,0 +1,36 @@
+version: '3.8'
+
+x-mariadb-variables: &mariadb-variables
+  MYSQL_ROOT_PASSWORD: password
+  MYSQL_DATABASE: mydatabase
+  MYSQL_USER: user
+  MYSQL_PASSWORD: password
+
+services:
+  db1:
+    image: mariadb:10.5
+    environment:
+      <<: *mariadb-variables
+
+  db2:
+    image: mariadb:10.6
+    environment:
+      <<: *mariadb-variables
+
+  db3:
+    image: mariadb:10.7
+    environment:
+      <<: *mariadb-variables
+
+  runner:
+    build: .
+    command: ["tail", "-f", "/dev/null"]
+    depends_on:
+      - db1
+      - db2
+      - db3
+    volumes:
+      - .:/app
+
+volumes:
+  .:
